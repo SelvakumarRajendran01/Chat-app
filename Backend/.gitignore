@@ -19,7 +19,7 @@
 .env.development.local
 .env.test.local
 .env.production.local
-.env
+# .env
 secrets.js
 fb_keys.json
 /client/debug.log

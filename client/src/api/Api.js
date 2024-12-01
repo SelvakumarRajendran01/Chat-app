@@ -16,7 +16,7 @@ const UNIQUE_USER_KEY = "unique_user_key";
 
 
 function getAuthToken() {
-  return sessionStorage.get("accesToken", { path: "/" });
+  return sessionStorage.getItem("accesToken", { path: "/" });
 }
 
 function handleError(error) {

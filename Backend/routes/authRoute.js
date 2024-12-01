@@ -1,4 +1,3 @@
-import UserModel from "../model/UserModel";
 import bcrypt from "bcrypt";
 import {
   isAuthenticated,
@@ -9,6 +8,7 @@ import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import multer from "multer";
 import { Router } from "express";
+import UserModel from "../model/UserModel.js";
 
 const upload = multer();
 const router = Router();

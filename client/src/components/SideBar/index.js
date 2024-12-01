@@ -203,7 +203,7 @@ const SideBar = (props) => {
             height:"50px"
           }}
         >
-          Add user
+          +
         </Button>
       </div>
     </>

@@ -5,7 +5,7 @@ import path from "path";
 import dotEnv from "dotenv";
 import mongoose from "mongoose";
 import authRouter from "./routes/authRoute.js";
-import openSocket from "socket.io";
+import { Server as openSocket } from "socket.io";
 import http from "http";
 import userRouter from "./routes/userRoute.js";
 import {
@@ -13,7 +13,11 @@ import {
   sendMessage,
   justJoinRoom,
   setSocketId,
-} from "./controller/eventHandler";
+} from "./controller/eventHandler.js";
+import { fileURLToPath } from "url";
+
+// Get the current directory name
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 if (process.env.NODE_ENV !== "production") {
   dotEnv.config();
@@ -24,11 +28,16 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 3001; // Change port to 3001
 
-export const io = openSocket(server);
+export const io = new openSocket(server);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000" || path.join(__dirname, "client/build"),
+    credentials: true,
+  })
+);
 
 /*EXPRESS ROUTES */
 app.use("/api/auth", authRouter);
@@ -37,10 +46,11 @@ app.use("/api/users", userRouter);
 /**Static files*/
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client/build")));
+  // Serve static files
+  app.use(express.static(path.join(__dirname, "../client/build")));
 
   app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+    res.sendFile(path.join(__dirname, "../client/build", "index.html"));
   });
 }
 
@@ -72,7 +82,7 @@ io.on("connect", (socket) => {
   });
 
   socket.on("req-join-room", (data) => {
-    console.log("JOIN ROOM REQUESTED",data);
+    console.log("JOIN ROOM REQUESTED", data);
   });
 
   socket.on("send-msg", (data) => {
@@ -95,7 +105,9 @@ server.listen(port, (err) => {
 /*MONGOOSE CONFIG*/
 (async () => {
   try {
-    const dbUrl = process.env.MONGODB_URL; // Ensure URL is set properly
+    const dbUrl =
+      process.env.MONGODB_URL ||
+      "mongodb+srv://admin-sk:M0h@n$3!v@@massanger.q2rtj.mongodb.net/?retryWrites=true&w=majority&appName=Massanger"; // Ensure URL is set properly
     await mongoose.connect(dbUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

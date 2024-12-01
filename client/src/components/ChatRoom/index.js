@@ -7,7 +7,7 @@ import {
   InsertEmoticon as SmileyIcon,
   AttachFile as AttatchFileIcon,
   Mic as MicIcon,
-  AccountCircle as AccountCircleIcon
+  AccountCircle as AccountCircleIcon,
 } from "@material-ui/icons";
 import { useSelector, useDispatch } from "react-redux";
 import ImageWithBuffer from "../ImageFromBuffer";
@@ -17,6 +17,7 @@ import {
 } from "../../utils/socketUtils";
 import { addChatToRoom } from "../../store/actions/userAction";
 import getDay from "../../utils/day";
+import ImageFromBuffer from "../ImageFromBuffer";
 
 const status = "online";
 
@@ -26,25 +27,25 @@ const ChatRoom = (props) => {
   const headerIconColor = theme.palette.icon.hederIconColor;
   const [textInput, setTextInput] = useState("");
   const currentRoomId = useSelector((state) => state.room.currentChatRoomId);
-  const [numberOfChats , setNumberOfChats] = useState(0);
-  const currentRoom = useSelector((state)  =>
+  const [numberOfChats, setNumberOfChats] = useState(0);
+  const currentRoom = useSelector((state) =>
     state.user.chatRooms.find((room) => room._id === currentRoomId)
   );
+  const user = useSelector((state) => state.user);
   const bottomDivRef = useRef(null);
   const userId = useSelector((state) => state.user.id);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(currentRoom && currentRoom.chats.length !== numberOfChats)
-      {
-        setNumberOfChats(currentRoom.chats.length);
-      }
-  })
+    if (currentRoom && currentRoom.chats.length !== numberOfChats) {
+      setNumberOfChats(currentRoom.chats.length);
+    }
+  });
   useEffect(() => {
     if (bottomDivRef.current) {
       bottomDivRef.current.scrollIntoView();
     }
-  },[numberOfChats,currentRoom]);
+  }, [numberOfChats, currentRoom]);
 
   if (!currentRoom) {
     return <></>;
@@ -77,7 +78,7 @@ const ChatRoom = (props) => {
         </div>
       );
     };
-
+    console.log(currentRoom.chats, user, "this is ChatComponents");
     let previousDay = "";
     const ChatComponents = currentRoom.chats.map((chat) => {
       const date = new Date(chat.time);
@@ -94,7 +95,7 @@ const ChatRoom = (props) => {
           <>
             {day}
             <div
-              className="chatRoom__body__chats__chat chatRoom__body__chats__chat-user"
+              className="chatRoom__body__chats__chat_sender chatRoom__body__chats__chat-user"
               style={{ background: backgroundColor.outGoingBackground }}
               key={chat._id}
             >
@@ -111,6 +112,18 @@ const ChatRoom = (props) => {
       return (
         <>
           {day}
+          <div style={{ display: "flex" ,gap:"10px",flexDirection:"row",alignItems:"center" }}>
+
+          {profileImage.contentType ? (
+            <ImageWithBuffer
+              className="chatRoom__img"
+              contentType={profileImage.contentType}
+                arrayBuffer={profileImage.data.data}
+                style={{height:"30px",width:"30px"}}
+            />
+          ) : (
+            <AccountCircleIcon style={{ height: "50px", width: "50px" }} />
+          )}
           <div
             className="chatRoom__body__chats__chat chatRoom__body__chats__chat-other-user"
             style={{ background: backgroundColor.incommingBackground }}
@@ -121,6 +134,7 @@ const ChatRoom = (props) => {
             <span className="chatRoom__body__chats__chat-other-user__time">
               {date.getHours() + "." + date.getMinutes()}
             </span>
+          </div>
           </div>
         </>
       );
@@ -136,11 +150,15 @@ const ChatRoom = (props) => {
         style={{ background: backgroundColor.headerBackground }}
       >
         <div className="chatRoom__header__left">
-         {profileImage.contentType ? <ImageWithBuffer
-            className="chatRoom__img"
-            contentType={profileImage.contentType}
-            arrayBuffer={profileImage.data.data}
-          /> : <AccountCircleIcon  style={{height:"50px",width:"50px"}}/>}
+          {profileImage.contentType ? (
+            <ImageWithBuffer
+              className="chatRoom__img"
+              contentType={profileImage.contentType}
+              arrayBuffer={profileImage.data.data}
+            />
+          ) : (
+            <AccountCircleIcon style={{ height: "50px", width: "50px" }} />
+          )}
           <div className="chatRoom__header__left__info">
             <span
               className="chatRoom__header__left__info__name"

@@ -106,8 +106,9 @@ server.listen(port, (err) => {
 (async () => {
   try {
     const dbUrl =
-      process.env.MONGODB_URL ||
-      "mongodb+srv://admin-sk:M0h@n$3!v@@massanger.q2rtj.mongodb.net/?retryWrites=true&w=majority&appName=Massanger"; // Ensure URL is set properly
+      process.env.MONGODB_URL
+      // ||
+      // "mongodb+srv://admin-sk:M0h@n$3!v@@massanger.q2rtj.mongodb.net/?retryWrites=true&w=majority&appName=Massanger"; // Ensure URL is set properly
     await mongoose.connect(dbUrl, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

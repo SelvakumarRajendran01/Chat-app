@@ -1,7 +1,7 @@
 import * as actionTypes from "./actionTypes.js";
 import * as authApi from "../../api/authApi.js";
 import * as usersApi from "../../api/usersApi.js";
-import cookies from "js-cookie";
+// import cookies from "js-cookie";
 
 
 const arrayToMap = (arr) => {
@@ -26,7 +26,7 @@ export const signUpAsync = (formData) => {
         }
        dispatch(createAction(actionTypes.IS_SIGNING_UP));
       const user = await authApi.signup(formData);
-      cookies.set("accesToken", user.accessToken, { expires: 365, path: "/" });
+      sessionStorage.set("accesToken", user.accessToken, { expires: 365, path: "/" });
       user.friendList = arrayToMap(user.friendList);
       dispatch(createAction(actionTypes.SET_USER_DETAIL, user));
     } catch (err) {
@@ -67,7 +67,7 @@ export const signInAsync = (email, password, socketId) => {
     try {
       const user = await authApi.login({ email, password, socketId });
       console.log(user.accessToken, "this is it");
-      cookies.set("accesToken", user.accessToken, { expires: 365, path:'/'}); 
+      sessionStorage.set("accesToken", user.accessToken, { expires: 365, path:'/'}); 
       dispatch(createAction(actionTypes.SET_USER_DETAIL, user));
     } catch (err) {
       console.log(err);
@@ -107,7 +107,7 @@ export const getUserDetail = () => {
 
 export const signOut = () => {
   return async (dispatch) => {
-    cookies.remove("accesToken",{ path:'/'});
+    sessionStorage.remove("accesToken",{ path:'/'});
     dispatch(
       createAction(actionTypes.SET_USER_DETAIL, {
         displayName: "",

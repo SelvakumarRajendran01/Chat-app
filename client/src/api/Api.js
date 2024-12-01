@@ -1,20 +1,22 @@
 import _axios, { create as Create } from "axios";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const UNIQUE_USER_KEY = "unique_user_key";
-const cookie = new Cookies();
+// const cookie = new Cookies();
 
-function getUniqueKey() {
-  let uniqueKey = cookie.get(UNIQUE_USER_KEY, { path: "/" });
-  if (!uniqueKey) {
-    // uniqueKey = UUID.randomUUID();
-    // cookie.set(UNIQUE_USER_KEY, uniqueKey, {path: '/'});
-  }
-  return uniqueKey;
-}
+// function getUniqueKey() {
+//   let uniqueKey = cookie.get(UNIQUE_USER_KEY, { path: "/" });
+//   if (!uniqueKey) {
+//     // uniqueKey = UUID.randomUUID();
+//     // cookie.set(UNIQUE_USER_KEY, uniqueKey, {path: '/'});
+//   }
+//   return uniqueKey;
+// }
+
+
 
 function getAuthToken() {
-  return Cookies.get("accesToken", { path: "/" });
+  return sessionStorage.get("accesToken", { path: "/" });
 }
 
 function handleError(error) {
